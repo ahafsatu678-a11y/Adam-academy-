@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adam's Academy - Learning for Ghanaian Schools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom styles for a playful, yet professional look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        :root {
+            --color-primary: #00A389; /* Deep Teal/Cyan */
+            --color-secondary: #FFD700; /* Bright Gold */
+            --color-background: #F8F9FA;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-background);
+        }
+        .main-card {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-radius: 1rem;
+        }
+        .text-primary { color: var(--color-primary); }
+        .bg-primary { background-color: var(--color-primary); }
+        .text-secondary { color: var(--color-secondary); }
+        .bg-secondary { background-color: var(--color-secondary); }
+        /* Style for the 'Chat Button' that is conditional */
+        #chat-button:disabled {
+            background-color: #9CA3AF;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <header class="bg-white main-card p-4 sticky top-0 z-10 shadow-lg mb-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-extrabold text-primary flex items-center">
+                <i data-lucide="graduation-cap" class="mr-2 h-7 w-7 text-secondary"></i>
+                Adam's Academy
+            </h1>
+            <nav class="flex items-center space-x-4">
+                <button id="nav-dashboard" onclick="showView('dashboard')" class="text-gray-700 hover:text-primary transition font-semibold hidden sm:block">Home</button>
+                <button id="nav-tutors" onclick="showView('tutors')" class="text-gray-700 hover:text-primary transition font-semibold hidden sm:block">Tutors</button>
+                <button id="nav-teams" onclick="showView('teams')" class="text-gray-700 hover:text-primary transition font-semibold hidden sm:block">Teams</button>
+                
+                <div class="relative">
+                    <button id="notification-bell" class="relative text-gray-700 hover:text-primary transition p-2 rounded-full hover:bg-gray-100">
+                        <i data-lucide="bell" class="h-6 w-6"></i>
+                        <span id="notification-count" class="absolute top-1 right-1 h-3 w-3 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">3</span>
+                    </button>
+    
+                    <div id="notification-dropdown" class="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-xl overflow-hidden z-20 hidden">
+                        <div class="py-2">
+                            <div class="px-4 py-2 text-sm font-semibold text-gray-800 border-b">Notifications</div>
+                            <a href="#" class="block px-4 py-3 border-b hover:bg-gray-50">
+                                <p class="text-sm font-medium text-primary">New Lesson: Fractions</p>
+                                <p class="text-xs text-gray-500">2 hours ago</p>
+                            </a>
+                            <a href="#" class="block px-4 py-3 border-b hover:bg-gray-50">
+                                <p class="text-sm font-medium text-gray-800">Team The Adabraka Aces is full!</p>
+                                <p class="text-xs text-gray-500">1 day ago</p>
+                            </a>
+                            <a href="#" class="block px-4 py-3 hover:bg-gray-50">
+                                <p class="text-sm font-medium text-red-500">New Quiz Available</p>
+                                <p class="text-xs text-gray-500">3 days ago</p>
+                            </a>
+                            <div class="px-4 py-2 text-center text-xs text-gray-500 pt-3">
+                                <a href="#" class="hover:text-primary">Mark all as read</a>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+
+                <button id="nav-profile" onclick="showView('profile')" class="bg-primary hover:bg-teal-700 text-white p-2 rounded-full transition">
+                    <i data-lucide="user" class="h-6 w-6"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-4 flex-grow w-full">
+        <div id="message-box" class="fixed top-20 right-4 p-3 bg-green-500 text-white rounded-lg shadow-xl hidden z-50 transition-opacity duration-300"></div>
+        <div id="loading-indicator" class="text-center text-primary font-bold hidden py-8">Loading...</div>
+
+        <section id="dashboard-view" class="view space-y-8">
+            <h2 class="text-4xl font-bold text-gray-800">Welcome, Learner! 👋</h2>
+            <p class="text-lg text-gray-600">Let's start your journey through the Ghanaian curriculum.</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div onclick="showLesson('Maths', 'Class 4', 'Fractions')" class="main-card bg-white p-6 cursor-pointer hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 border-b-4 border-primary">
+                    <i data-lucide="calculator" class="h-8 w-8 text-primary mb-3"></i>
+                    <h3 class="text-xl font-bold text-gray-800">Mathematics</h3>
+                    <p class="text-sm text-gray-500">Numeracy and Problem Solving.</p>
+                </div>
+                <div onclick="showLesson('English', 'JHS 1', 'Comprehension')" class="main-card bg-white p-6 cursor-pointer hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 border-b-4 border-amber-500">
+                    <i data-lucide="book-open" class="h-8 w-8 text-amber-500 mb-3"></i>
+                    <h3 class="text-xl font-bold text-gray-800">English Language</h3>
+                    <p class="text-sm text-gray-500">Literacy and Communication.</p>
+                </div>
+                <div onclick="showLesson('Science', 'Class 6', 'Ecology')" class="main-card bg-white p-6 cursor-pointer hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 border-b-4 border-red-500">
+                    <i data-lucide="flask-round" class="h-8 w-8 text-red-500 mb-3"></i>
+                    <h3 class="text-xl font-bold text-gray-800">Integrated Science</h3>
+                    <p class="text-sm text-gray-500">Exploring the natural world.</p>
+                </div>
+                <div onclick="showLesson('ICT', 'JHS 3', 'Database Management')" class="main-card bg-white p-6 cursor-pointer hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 border-b-4 border-indigo-500">
+                    <i data-lucide="laptop" class="h-8 w-8 text-indigo-500 mb-3"></i>
+                    <h3 class="text-xl font-bold text-gray-800">ICT</h3>
+                    <p class="text-sm text-gray-500">Digital skills for the future.</p>
+                </div>
+            </div>
+
+            <div class="p-6 bg-white main-card">
+                <h3 class="text-xl font-bold text-primary mb-4">Select Your Grade (Class 1 - JHS 3)</h3>
+                <div class="flex flex-wrap gap-2">
+                    <button class="px-3 py-1 bg-gray-100 rounded-full text-gray-700 hover:bg-secondary hover:text-white transition">Class 1</button>
+                    <button class="px-3 py-1 bg-gray-100 rounded-full text-gray-700 hover:bg-secondary hover:text-white transition">Class 6</button>
+                    <button class="px-3 py-1 bg-gray-100 rounded-full text-gray-700 hover:bg-secondary hover:text-white transition">JHS 1</button>
+                    <button class="px-3 py-1 bg-gray-100 rounded-full text-gray-700 hover:bg-secondary hover:text-white transition">JHS 3</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="lesson-view" class="view hidden space-y-6">
+            <h2 id="lesson-title" class="text-3xl font-bold text-primary">Lesson Title</h2>
+            <p id="lesson-subtitle" class="text-lg text-gray-600">Subject | Grade</p>
+
+            <div class="relative w-full aspect-video main-card bg-gray-200 flex items-center justify-center">
+                <i data-lucide="play-circle" class="h-16 w-16 text-primary opacity-75"></i>
+                <p class="absolute text-gray-600 font-semibold">Video Explanation Placeholder (Fun & Engaging)</p>
+            </div>
+
+            <div class="bg-white main-card p-6 space-y-4">
+                <h3 class="text-2xl font-bold text-gray-800">Learning Objectives</h3>
+                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                    <li>Understand the core concept using relatable Ghanaian examples.</li>
+                    <li>Apply the concept to real-world problems.</li>
+                    <li>Be ready for the quiz questions!</li>
+                </ul>
+                <button id="start-quiz-button" onclick="lessonCompleted()" class="w-full bg-secondary hover:bg-amber-500 text-white font-bold py-3 px-4 rounded-lg transition mt-4">
+                    Complete Lesson & Start Quiz
+                </button>
+            </div>
+        </section>
+
+        <section id="teams-view" class="view hidden space-y-6">
+            <h2 class="text-3xl font-bold text-primary">Study Teams & Weekly Competitions</h2>
+            <p class="text-gray-600">The current maximum team size is **25 learners**. You can create one team and join up to two teams total.</p>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white main-card p-6 space-y-4">
+                    <h3 class="text-2xl font-bold text-gray-800 flex items-center"><i data-lucide="users" class="mr-2"></i> My Team Status</h3>
+                    <p class="text-sm text-red-500">Learner ID: <span id="team-user-id" class="font-mono text-xs bg-red-100 p-1 rounded">Loading...</span> (Use this to invite others!)</p>
+                    <div id="my-teams-list" class="space-y-3">
+                        <p class="text-gray-500">You are currently in 0/2 teams.</p>
+                        <button class="bg-primary text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition">Create New Team</button>
+                    </div>
+                </div>
+
+                <div class="bg-white main-card p-6 space-y-4">
+                    <h3 class="text-2xl font-bold text-gray-800 flex items-center"><i data-lucide="trophy" class="mr-2 text-secondary"></i> Weekly Leaderboard</h3>
+                    <ul id="leaderboard-list" class="space-y-2 text-gray-600">
+                        <li class="flex justify-between font-bold"><span>1. The Adabraka Aces (22/25)</span> <span class="text-primary">15,000 pts</span></li>
+                        <li class="flex justify-between"><span>2. Cape Coast Crew (18/25)</span> <span>14,500 pts</span></li>
+                        <li class="flex justify-between"><span>3. Tema Titans (25/25)</span> <span>14,100 pts</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-white main-card p-6 space-y-4 text-center">
+                <h3 class="text-2xl font-bold text-gray-800">Team Chat Room</h3>
+                <button id="chat-button" disabled class="bg-primary text-white py-3 px-6 rounded-lg font-bold transition">
+                    <i data-lucide="message-circle" class="inline-block mr-2"></i>
+                    Chat with Your Team
+                </button>
+                <p id="chat-status" class="text-sm text-gray-500 mt-2">
+                    Chat opens automatically once you have completed a lesson or quiz!
+                </p>
+            </div>
+        </section>
+
+        <section id="tutors-view" class="view hidden space-y-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-3xl font-bold text-primary">Find a Tutor (Side Hustle)</h2>
+                <button onclick="showView('tutor-signup')" class="bg-secondary text-white py-2 px-4 rounded-lg hover:bg-amber-500 transition font-semibold flex items-center">
+                    <i data-lucide="briefcase" class="mr-2 h-5 w-5"></i> For Tutors
+                </button>
+            </div>
+
+            <div class="bg-white main-card p-4 flex flex-col md:flex-row gap-4">
+                <input type="text" placeholder="Search by name, subject, or grade..." class="flex-grow p-2 border rounded-lg focus:ring-primary focus:border-primary">
+                <select class="p-2 border rounded-lg">
+                    <option>Filter by Subject (e.g., Maths)</option>
+                </select>
+                <select class="p-2 border rounded-lg">
+                    <option>Filter by Grade (e.g., JHS 2)</option>
+                </select>
+            </div>
+            
+            <div id="tutor-list" class="space-y-4">
+                <div class="bg-white main-card p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Mr. Samuel Addo</h3>
+                        <p class="text-primary font-semibold">Teaches: Maths & Science (JHS 2, Class 4)</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i data-lucide="map-pin" class="h-4 w-4 mr-1"></i> Accra, Ghana | <i data-lucide="mail" class="h-4 w-4 mx-1"></i> Contact Available
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-start sm:items-end mt-3 sm:mt-0 space-y-1">
+                        <div class="flex items-center">
+                            <span class="text-secondary text-xl font-bold mr-1">4.8</span>
+                            <i data-lucide="star" class="h-4 w-4 fill-secondary text-secondary"></i>
+                            <span class="text-sm text-gray-500">(34 Reviews)</span>
+                        </div>
+                        <p class="text-sm font-semibold text-gray-800">Rate: 5 GHS per lesson</p>
+                        <button class="bg-primary text-white py-1 px-3 rounded-full text-sm hover:bg-teal-700 transition">Request Lesson</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="profile-view" class="view hidden space-y-6">
+            <h2 class="text-3xl font-bold text-primary">My Learner Profile</h2>
+            <div class="bg-white main-card p-6 max-w-lg mx-auto space-y-4">
+                <p class="text-sm text-gray-500">User ID: <span id="profile-user-id" class="font-mono text-xs bg-gray-100 p-1 rounded">Loading...</span></p>
+                <form id="learner-profile-form" class="space-y-4">
+                    <div>
+                        <label for="learner-name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                        <input type="text" id="learner-name" required class="mt-1 block w-full p-2 border rounded-lg">
+                    </div>
+                    <div>
+                        <label for="learner-grade" class="block text-sm font-medium text-gray-700">Current Grade (Class 1 to JHS 3)</label>
+                        <select id="learner-grade" required class="mt-1 block w-full p-2 border rounded-lg">
+                            <option value="">Select Grade</option>
+                            <option value="Class1">Class 1</option>
+                            <option value="Class4">Class 4</option>
+                            <option value="Class6">Class 6</option>
+                            <option value="JHS1">JHS 1</option>
+                            <option value="JHS3">JHS 3</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-teal-700 transition">Save Profile</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="tutor-signup-view" class="view hidden space-y-6">
+            <h2 class="text-3xl font-bold text-primary">Tutor Registration (Become an Academy Partner)</h2>
+            <div class="bg-white main-card p-6 max-w-xl mx-auto space-y-4">
+                <p class="text-red-500 font-semibold">Important: You must select between 1 and 2 subjects/classes (spanning Class 1 to JHS 3), and no more than 2 classes total.</p>
+                <form id="tutor-signup-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Full Name</label>
+                        <input type="text" id="tutor-name" required class="mt-1 block w-full p-2 border rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Address / City</label>
+                        <input type="text" id="tutor-address" required class="mt-1 block w-full p-2 border rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Contact Number</label>
+                        <input type="tel" id="tutor-contact" required class="mt-1 block w-full p-2 border rounded-lg">
+                    </div>
+
+                    <div class="space-y-2 border-t pt-4">
+                        <label class="block text-sm font-bold text-gray-700">Subjects & Classes to Teach (Max 2 Classes Total)</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="flex items-center">
+                                <input type="checkbox" name="subject-grade" value="Maths-JHS3" id="maths-jhs3" class="rounded text-primary focus:ring-primary">
+                                <label for="maths-jhs3" class="ml-2 text-sm text-gray-600">Maths (JHS 3)</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" name="subject-grade" value="English-Class4" id="english-class4" class="rounded text-primary focus:ring-primary">
+                                <label for="english-class4" class="ml-2 text-sm text-gray-600">English (Class 4)</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" name="subject-grade" value="Science-Class1" id="science-class1" class="rounded text-primary focus:ring-primary">
+                                <label for="science-class1" class="ml-2 text-sm text-gray-600">Science (Class 1)</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" name="subject-grade" value="ICT-Class6" id="ict-class6" class="rounded text-primary focus:ring-primary">
+                                <label for="ict-class6" class="ml-2 text-sm text-gray-600">ICT (Class 6)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Lesson Price (3 - 10 GHS per lesson)</label>
+                        <input type="number" id="tutor-price" min="3" max="10" required class="mt-1 block w-full p-2 border rounded-lg">
+                    </div>
+
+                    <button type="submit" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-teal-700 transition">Submit Tutor Application</button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="sm:hidden bg-white main-card p-3 sticky bottom-0 z-10 shadow-t-lg border-t border-gray-100">
+        <div class="flex justify-around">
+            <button onclick="showView('dashboard')" class="flex flex-col items-center text-gray-600 hover:text-primary transition">
+                <i data-lucide="home" class="h-6 w-6"></i>
+                <span class="text-xs">Home</span>
+            </button>
+            <button onclick="showView('tutors')" class="flex flex-col items-center text-gray-600 hover:text-primary transition">
+                <i data-lucide="users" class="h-6 w-6"></i>
+                <span class="text-xs">Tutors</span>
+            </button>
+            <button onclick="showView('teams')" class="flex flex-col items-center text-gray-600 hover:text-primary transition">
+                <i data-lucide="shield" class="h-6 w-6"></i>
+                <span class="text-xs">Teams</span>
+            </button>
+            <button onclick="showView('profile')" class="flex flex-col items-center text-gray-600 hover:text-primary transition">
+                <i data-lucide="user" class="h-6 w-6"></i>
+                <span class="text-xs">Profile</span>
+            </button>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, query, addDoc, getDocs, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global Variables (Provided by Canvas Environment)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-abas-academy-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { /* Mock config */ };
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app, db, auth, userId = 'loading';
+        let isAuthReady = false;
+
+        // Set Firebase Log Level for debugging
+        setLogLevel('debug');
+
+        /**
+         * Initializes Firebase and authenticates the user.
+         */
+        async function initFirebase() {
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                
+                // 1. Initial Authentication
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                // 2. Auth State Listener
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        document.getElementById('profile-user-id').textContent = userId;
+                        document.getElementById('team-user-id').textContent = userId;
+                        isAuthReady = true;
+                        
+                        // Start real-time listeners once authenticated
+                        listenForProfileChanges(userId);
+                        listenForPublicTutors();
+                        listenForPublicTeams();
+                    } else {
+                        userId = 'anonymous';
+                        isAuthReady = true; // Still ready, even if anonymous
+                    }
+                    document.getElementById('loading-indicator').classList.add('hidden');
+                    showView('dashboard'); // Show default view after auth is ready
+                });
+
+            } catch (error) {
+                console.error("Firebase Initialization Error:", error);
+                showMessageBox('Error setting up the application. Check console for details.', 'error');
+                document.getElementById('loading-indicator').classList.add('hidden');
+            }
+        }
+
+        // --- Core Application State & View Management ---
+        window.currentView = 'dashboard';
+        window.lessonCompletedStatus = false;
+        
+        // --- NEW NOTIFICATION BELL TOGGLE FUNCTION ---
+
+        /**
+         * Toggles the visibility of the notification dropdown.
+         */
+        window.toggleNotificationDropdown = function() {
+            const dropdown = document.getElementById('notification-dropdown');
+            if (dropdown) {
+                // Toggles the 'hidden' class on the dropdown element
+                dropdown.classList.toggle('hidden');
+            }
+        }
+        
+        // --- END NEW NOTIFICATION BELL TOGGLE FUNCTION ---
+
+
+        /**
+         * Switches the main content view.
+         * @param {string} viewId The ID of the view to show (e.g., 'dashboard', 'tutors').
+         */
+        window.showView = function(viewId) {
+            document.querySelectorAll('.view').forEach(view => {
+                view.classList.add('hidden');
+            });
+            document.getElementById(viewId + '-view').classList.remove('hidden');
+            window.currentView = viewId;
+            
+            // Check if the chat button should be enabled on view switch
+            updateChatButtonState();
+            
+            // Re-render lucide icons after view switch
+            lucide.createIcons();
+            
+            // Ensure the notification dropdown is hidden when switching views
+            const dropdown = document.getElementById('notification-dropdown');
+            if (dropdown && !dropdown.classList.contains('hidden')) {
+                dropdown.classList.add('hidden');
+            }
+        }
+
+        /**
+         * Simulates lesson completion and enables chat.
+         */
+        window.lessonCompleted = function() {
+            window.lessonCompletedStatus = true;
+            showMessageBox('Quiz Submitted! Chat is now enabled for the next 2 hours.', 'success');
+            showView('dashboard');
+            updateChatButtonState();
+        }
+
+        /**
+         * Updates the state of the team chat button based on lesson completion.
+         */
+        function updateChatButtonState() {
+            const chatButton = document.getElementById('chat-button');
+            const chatStatus = document.getElementById('chat-status');
+            if (chatButton && chatStatus) {
+                if (window.lessonCompletedStatus) {
+                    chatButton.disabled = false;
+                    chatButton.textContent = 'Chat with Your Team';
+                    chatButton.classList.add('bg-primary', 'hover:bg-teal-700');
+                    chatButton.classList.remove('bg-gray-400', 'hover:bg-gray-400');
+                    chatStatus.textContent = 'Chat is open! Go collaborate with your team.';
+                } else {
+                    chatButton.disabled = true;
+                    chatButton.textContent = 'Complete a Lesson to Chat';
+                    chatButton.classList.add('bg-gray-400');
+                    chatButton.classList.remove('bg-primary', 'hover:bg-teal-700');
+                    chatStatus.textContent = 'Chat opens automatically once you have completed a lesson or quiz!';
+                }
+            }
+        }
+        
+        /**
+         * Sets up the lesson view with topic details.
+         */
+        window.showLesson = function(subject, grade, topic) {
+            document.getElementById('lesson-title').textContent = `${topic}`;
+            document.getElementById('lesson-subtitle').textContent = `${subject} | ${grade}`;
+            showView('lesson');
+        }
+
+        // --- Utility Functions ---
+        
+        /**
+         * Displays a temporary, non-blocking message box.
+         * @param {string} message The message to display.
+         * @param {'success'|'error'|'info'} type The type of message.
+         */
+        function showMessageBox(message, type = 'info') {
+            const box = document.getElementById('message-box');
+            box.textContent = message;
+            box.classList.remove('bg-green-500', 'bg-red-500', 'bg-blue-500', 'hidden');
+            box.classList.add(
+                type === 'success' ? 'bg-green-500' : 
+                type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+            );
+            box.style.opacity = '1';
+            
+            setTimeout(() => {
+                box.style.opacity = '0';
+                setTimeout(() => box.classList.add('hidden'), 300);
+            }, 5000);
+        }
+
+        // --- Firestore Real-Time Listeners ---
+
+        /**
+         * Listens for the current user's profile and populates the form.
+         * @param {string} uid User ID.
+         */
+        function listenForProfileChanges(uid) {
+            if (!db || !isAuthReady) return;
+            const profileRef = doc(db, 'artifacts', appId, 'users', uid, 'profiles', uid);
+            onSnapshot(profileRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('learner-name').value = data.name || '';
+                    document.getElementById('learner-grade').value = data.grade || '';
+                }
+            }, (error) => {
+                console.error("Error listening to profile:", error);
+            });
+        }
+        
+        /**
+         * Listens for changes in the public tutor directory.
+         */
+        function listenForPublicTutors() {
+            if (!db || !isAuthReady) return;
+            const tutorsColRef = collection(db, 'artifacts', appId, 'public', 'data', 'tutors');
+            onSnapshot(tutorsColRef, (snapshot) => {
+                const tutorList = document.getElementById('tutor-list');
+                if (!tutorList) return;
+                tutorList.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    tutorList.innerHTML = '<p class="text-center text-gray-500">No tutors found yet. Be the first to sign up!</p>';
+                    return;
+                }
+                
+                snapshot.forEach(doc => {
+                    const tutor = doc.data();
+                    const subjectsTaught = Array.isArray(tutor.subjects) ? tutor.subjects.join(', ') : 'Not specified';
+                    const gradesTaught = Array.isArray(tutor.grades) ? tutor.grades.join(', ') : 'Not specified';
+
+                    const card = `
+                        <div class="bg-white main-card p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800">${tutor.name}</h3>
+                                <p class="text-primary font-semibold">Teaches: ${subjectsTaught} (${gradesTaught})</p>
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i data-lucide="map-pin" class="h-4 w-4 mr-1"></i> ${tutor.address} | <i data-lucide="phone" class="h-4 w-4 mx-1"></i> ${tutor.contact.substring(0, 4)}...
+                                </div>
+                            </div>
+                            <div class="flex flex-col items-start sm:items-end mt-3 sm:mt-0 space-y-1">
+                                <div class="flex items-center">
+                                    <span class="text-secondary text-xl font-bold mr-1">${(tutor.rating || 0).toFixed(1)}</span>
+                                    <i data-lucide="star" class="h-4 w-4 fill-secondary text-secondary"></i>
+                                    <span class="text-sm text-gray-500">(${tutor.reviewCount || 0} Reviews)</span>
+                                </div>
+                                <p class="text-sm font-semibold text-gray-800">Rate: ${tutor.price} GHS per lesson</p>
+                                <button class="bg-primary text-white py-1 px-3 rounded-full text-sm hover:bg-teal-700 transition">Request Lesson</button>
+                            </div>
+                        </div>
+                    `;
+                    tutorList.insertAdjacentHTML('beforeend', card);
+                });
+                lucide.createIcons(); // Redraw icons for new elements
+            }, (error) => {
+                console.error("Error listening to tutors:", error);
+            });
+        }
+        
+        /**
+         * Listens for changes in the public teams for the leaderboard.
+         */
+        function listenForPublicTeams() {
+            if (!db || !isAuthReady) return;
+            const teamsColRef = collection(db, 'artifacts', appId, 'public', 'data', 'teams');
+            // NOTE: Sorting is done in memory to avoid Firestore index errors on orderBy()
+            onSnapshot(teamsColRef, (snapshot) => {
+                const teams = [];
+                snapshot.forEach(doc => {
+                    teams.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // Sort teams by points (in memory)
+                teams.sort((a, b) => (b.points || 0) - (a.points || 0));
+
+                const leaderboardList = document.getElementById('leaderboard-list');
+                leaderboardList.innerHTML = '';
+                
+                teams.slice(0, 5).forEach((team, index) => {
+                    const isTop = index === 0 ? 'font-bold text-lg' : '';
+                    const teamItem = `
+                        <li class="flex justify-between ${isTop}">
+                            <span>${index + 1}. ${team.name} (${team.members.length}/25)</span> 
+                            <span class="${isTop ? 'text-primary' : ''}">${(team.points || 0).toLocaleString()} pts</span>
+                        </li>
+                    `;
+                    leaderboardList.insertAdjacentHTML('beforeend', teamItem);
+                });
+            }, (error) => {
+                console.error("Error listening to teams:", error);
+            });
+        }
+
+        // --- Form Submission Handlers ---
+
+        /**
+         * Handles learner profile submission.
+         */
+        document.getElementById('learner-profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!db || !userId) {
+                showMessageBox('Application not fully initialized. Please wait.', 'error');
+                return;
+            }
+            
+            const name = document.getElementById('learner-name').value;
+            const grade = document.getElementById('learner-grade').value;
+            const profileRef = doc(db, 'artifacts', appId, 'users', userId, 'profiles', userId);
+
+            try {
+                await setDoc(profileRef, {
+                    name: name,
+                    grade: grade,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+                showMessageBox('Learner Profile saved successfully!', 'success');
+            } catch (error) {
+                console.error("Error saving profile:", error);
+                showMessageBox('Failed to save profile. See console.', 'error');
+            }
+        });
+
+        /**
+         * Handles tutor signup submission.
+         */
+        document.getElementById('tutor-signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!db || !userId) {
+                showMessageBox('Application not fully initialized. Please wait.', 'error');
+                return;
+            }
+            
+            // Collect form data
+            const name = document.getElementById('tutor-name').value;
+            const address = document.getElementById('tutor-address').value;
+            const contact = document.getElementById('tutor-contact').value;
+            const price = parseFloat(document.getElementById('tutor-price').value);
+            
+            const selectedSubjects = Array.from(document.querySelectorAll('input[name="subject-grade"]:checked'));
+            
+            // Simple validation for the max 2 classes/subjects rule (better handled server-side)
+            if (selectedSubjects.length === 0 || selectedSubjects.length > 2) {
+                showMessageBox('You must select between 1 and 2 subjects/classes to teach.', 'error');
+                return;
+            }
+
+            const subjects = selectedSubjects.map(s => s.value.split('-')[0]);
+            const grades = selectedSubjects.map(s => s.value.split('-')[1]);
+            
+            const tutorDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'tutors', userId);
+
+            try {
+                await setDoc(tutorDocRef, {
+                    name: name,
+                    address: address,
+                    contact: contact,
+                    subjects: subjects,
+                    grades: grades,
+                    price: price,
+                    rating: 0,
+                    reviewCount: 0,
+                    status: 'pending review',
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+                showMessageBox('Tutor application submitted! We will review your profile shortly.', 'success');
+                showView('tutors'); // Redirect to tutor view
+            } catch (error) {
+                console.error("Error saving tutor application:", error);
+                showMessageBox('Failed to submit application. See console.', 'error');
+            }
+        });
+
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Display loading indicator until auth is ready
+            document.getElementById('loading-indicator').classList.remove('hidden');
+            
+            // Attach the toggle function to the notification bell
+            const notificationBell = document.getElementById('notification-bell');
+            if (notificationBell) {
+                notificationBell.addEventListener('click', window.toggleNotificationDropdown);
+            }
+            
+            initFirebase();
+            lucide.createIcons();
+        });
+
+    </script>
+</body>
+</html>
