@@ -47,7 +47,7 @@
                 <button id="nav-teams" onclick="showView('teams')" class="text-gray-700 hover:text-primary transition font-semibold hidden sm:block">Teams</button>
                 
                 <div class="relative">
-                    <button id="notification-bell" class="relative text-gray-700 hover:text-primary transition p-2 rounded-full hover:bg-gray-100">
+                    <button id="notification-bell"onclick="toggleNotificationDropdown()" class="relative text-gray-700 hover:text-primary transition p-2 rounded-full hover:bg-gray-100">
                         <i data-lucide="bell" class="h-6 w-6"></i>
                         <span id="notification-count" class="absolute top-1 right-1 h-3 w-3 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">3</span>
                     </button>
